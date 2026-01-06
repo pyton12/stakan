@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Agency TMA</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            color: #333;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #667eea;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #333;
+            word-break: break-all;
+            max-width: 60%;
+            text-align: right;
+        }
+
+        .premium-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .premium-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .premium-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .premium-description {
+            opacity: 0.9;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .premium-price {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .event-log {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .event-item.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .event-item.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .event-item.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .event-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #667eea;
+            color: white;
+        }
+
+        .badge.success {
+            background: #28a745;
+        }
+
+        .badge.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .storage-info {
+            background: #e7f3ff;
+            border: 2px solid #2196F3;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .storage-info h3 {
+            color: #1976D2;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .storage-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976D2;
+            text-align: center;
+            margin: 8px 0;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Test Agency TMA</h1>
+            <p>Тестовий Mini App для SDK</p>
+        </div>
+
+        <!-- User Info Card -->
+        <div class="card">
+            <h2>👤 Інформація користувача</h2>
+            <div class="info-row">
+                <span class="info-label">User ID:</span>
+                <span class="info-value" id="userId">Loading...</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Username:</span>
+                <span class="info-value" id="username">Loading...</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Language:</span>
+                <span class="info-value" id="language">Loading...</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Platform:</span>
+                <span class="info-value" id="platform">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Campaign Info Card -->
+        <div class="card">
+            <h2>📊 Campaign Tracking</h2>
+            <div class="info-row">
+                <span class="info-label">Campaign ID:</span>
+                <span class="info-value" id="campaignId">Not found</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Source:</span>
+                <span class="info-value" id="source">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Start Param:</span>
+                <span class="info-value" id="startParam" style="font-size: 11px;">-</span>
+            </div>
+            
+            <!-- Локальне сховище -->
+            <div class="storage-info">
+                <h3>💾 Локальне сховище (localStorage)</h3>
+                <div class="storage-count" id="storageCount">0</div>
+                <div style="text-align: center; font-size: 12px; color: #666;">
+                    збережених подій
+                </div>
+                <button class="btn-secondary" onclick="viewStorage()">
+                    Переглянути всі події
+                </button>
+                <button class="btn-secondary" onclick="clearStorage()" style="background: #ffebee; color: #c62828;">
+                    Очистити сховище
+                </button>
+            </div>
+        </div>
+
+        <!-- Premium Card -->
+        <div class="card premium-card">
+            <div class="premium-icon">💎</div>
+            <div class="premium-title">Premium Access</div>
+            <div class="premium-description">
+                Отримайте доступ до всіх функцій та видаліть рекламу
+            </div>
+            <div class="premium-price">⭐ 10 Stars</div>
+            <button class="btn btn-primary" id="buyButton" onclick="buyPremium()">
+                Купити Premium
+            </button>
+            <div style="margin-top: 12px; font-size: 12px; opacity: 0.8;">
+                ℹ️ Для тестування: платіж буде симульовано
+            </div>
+        </div>
+
+        <!-- Event Log Card -->
+        <div class="card">
+            <h2>📝 Лог подій</h2>
+            <div class="event-log" id="eventLog">
+                <div class="event-item info">
+                    Ініціалізація TMA...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        let campaignId = null;
+        let userId = null;
+        let eventCounter = 0;
+
+        // Ініціалізація TMA
+        function init() {
+            tg.ready();
+            tg.expand();
+
+            // Встановлюємо тему
+            document.body.style.backgroundColor = tg.backgroundColor || '#667eea';
+
+            addLog('✓ TMA ініціалізовано', 'success');
+
+            // Отримуємо дані користувача
+            const user = tg.initDataUnsafe?.user;
+            
+            if (user) {
+                userId = user.id;
+                document.getElementById('userId').textContent = user.id;
+                document.getElementById('username').textContent = user.username || 'No username';
+                document.getElementById('language').textContent = user.language_code || 'en';
+                addLog(`✓ Користувач: ${user.first_name} (ID: ${user.id})`, 'success');
+            } else {
+                // Для тестування в браузері
+                userId = 'browser_test_' + Date.now();
+                document.getElementById('userId').textContent = 'Browser Test Mode';
+                document.getElementById('username').textContent = '@testuser';
+                document.getElementById('language').textContent = 'en';
+                addLog('ℹ️ Режим тестування в браузері', 'info');
+            }
+
+            document.getElementById('platform').textContent = tg.platform || 'web';
+
+            // Витягуємо campaign_id з start_param
+            extractCampaignId();
+
+            // Зберігаємо подію app_open
+            saveEvent('app_open', {
+                campaign_id: campaignId,
+                user_id: userId,
+                timestamp: Date.now()
+            });
+
+            // Оновлюємо лічильник сховища
+            updateStorageCount();
+        }
+
+        // Витягування campaign_id
+        function extractCampaignId() {
+            const startParam = tg.initDataUnsafe?.start_param;
+            
+            if (!startParam) {
+                // Спробуємо з URL (для тестування в браузері)
+                const urlParams = new URLSearchParams(window.location.search);
+                const utmCampaign = urlParams.get('utm_campaign');
+                
+                if (utmCampaign) {
+                    campaignId = utmCampaign;
+                    document.getElementById('campaignId').innerHTML = 
+                        `<span class="badge success">${campaignId}</span>`;
+                    document.getElementById('source').textContent = 'UTM параметри';
+                    document.getElementById('startParam').textContent = 'utm_campaign=' + utmCampaign;
+                    addLog('✓ Campaign ID витягнуто з UTM', 'success');
+                    return;
+                }
+                
+                addLog('⚠️ Start param не знайдено. Відкрийте TMA через посилання з campaign_id', 'error');
+                document.getElementById('campaignId').innerHTML = 
+                    `<span class="badge warning">Не знайдено</span>`;
+                return;
+            }
+
+            document.getElementById('startParam').textContent = startParam;
+
+            // Спроба декодувати base64
+            try {
+                const decoded = JSON.parse(atob(startParam));
+                campaignId = decoded.cid || decoded.campaign_id || decoded.c;
+                
+                if (campaignId) {
+                    document.getElementById('campaignId').innerHTML = 
+                        `<span class="badge success">${campaignId}</span>`;
+                    document.getElementById('source').textContent = decoded.src || decoded.source || 'Base64';
+                    addLog('✓ Campaign ID витягнуто з Base64', 'success');
+                    addLog(`  → CID: ${campaignId}`, 'info');
+                } else {
+                    addLog('⚠️ Campaign ID не знайдено в Base64', 'error');
+                }
+            } catch (e) {
+                // Якщо не base64, використовуємо як є
+                campaignId = startParam;
+                document.getElementById('campaignId').innerHTML = 
+                    `<span class="badge success">${campaignId}</span>`;
+                document.getElementById('source').textContent = 'Direct (raw)';
+                addLog('✓ Campaign ID витягнуто (raw format)', 'success');
+            }
+        }
+
+        // Збереження події в localStorage
+        function saveEvent(eventType, data) {
+            const events = JSON.parse(localStorage.getItem('tma_events') || '[]');
+            
+            const event = {
+                id: ++eventCounter,
+                event_type: eventType,
+                ...data,
+                created_at: new Date().toISOString()
+            };
+            
+            events.push(event);
+            localStorage.setItem('tma_events', JSON.stringify(events));
+            
+            addLog(`💾 Подія "${eventType}" збережена локально (#${event.id})`, 'success');
+            updateStorageCount();
+            
+            return event;
+        }
+
+        // Оновлення лічильника сховища
+        function updateStorageCount() {
+            const events = JSON.parse(localStorage.getItem('tma_events') || '[]');
+            document.getElementById('storageCount').textContent = events.length;
+        }
+
+        // Перегляд всього сховища
+        function viewStorage() {
+            const events = JSON.parse(localStorage.getItem('tma_events') || '[]');
+            
+            if (events.length === 0) {
+                tg.showAlert('Сховище порожнє. Зробіть якусь дію (наприклад, купіть Premium)');
+                return;
+            }
+
+            let message = `📊 Всього подій: ${events.length}\n\n`;
+            
+            // Показуємо останні 5 подій
+            const recent = events.slice(-5).reverse();
+            recent.forEach((e, i) => {
+                const time = new Date(e.created_at).toLocaleTimeString();
+                message += `${i + 1}. ${e.event_type}\n`;
+                message += `   Час: ${time}\n`;
+                if (e.campaign_id) message += `   Campaign: ${e.campaign_id}\n`;
+                if (e.amount) message += `   Сума: ${e.amount} ${e.currency}\n`;
+                message += '\n';
+            });
+
+            if (events.length > 5) {
+                message += `... та ще ${events.length - 5} подій`;
+            }
+
+            tg.showAlert(message);
+            
+            // Також виводимо в console
+            console.log('📊 Всі події:', events);
+        }
+
+        // Очищення сховища
+        function clearStorage() {
+            if (confirm('Видалити всі збережені події?')) {
+                localStorage.removeItem('tma_events');
+                eventCounter = 0;
+                updateStorageCount();
+                addLog('🗑️ Сховище очищено', 'info');
+            }
+        }
+
+        // Покупка Premium
+        function buyPremium() {
+            const button = document.getElementById('buyButton');
+            button.disabled = true;
+            button.textContent = 'Обробка...';
+
+            addLog('💳 Ініціація платежу за Premium...', 'info');
+
+            // ПРИМІТКА: В реальному застосунку тут буде tg.openInvoice()
+            // Для тестування симулюємо платіж
+            
+            setTimeout(() => {
+                // Симулюємо успішний платіж
+                const transactionId = 'test_txn_' + Date.now();
+                
+                const paymentEvent = saveEvent('payment', {
+                    campaign_id: campaignId,
+                    user_id: userId,
+                    amount: 10,
+                    currency: 'stars',
+                    transaction_id: transactionId,
+                    product_id: 'premium_access'
+                });
+
+                addLog(`✓ Платіж успішний! Transaction ID: ${transactionId}`, 'success');
+                addLog(`💎 Premium активовано! Подія #${paymentEvent.id} збережена`, 'success');
+                
+                button.textContent = '✓ Premium активовано';
+                button.style.background = '#28a745';
+                button.style.color = 'white';
+                
+                // Показуємо повідомлення
+                tg.showAlert('🎉 Premium успішно активовано!\n\nПодія збережена в localStorage.');
+                
+            }, 1500);
+        }
+
+        // Додавання логу
+        function addLog(message, type = '') {
+            const logContainer = document.getElementById('eventLog');
+            
+            const eventItem = document.createElement('div');
+            eventItem.className = `event-item ${type}`;
+            
+            const time = new Date().toLocaleTimeString();
+            eventItem.innerHTML = `
+                <div class="event-time">${time}</div>
+                <div>${message}</div>
+            `;
+            
+            logContainer.insertBefore(eventItem, logContainer.firstChild);
+
+            // Обмежуємо кількість логів
+            const items = logContainer.querySelectorAll('.event-item');
+            if (items.length > 15) {
+                items[items.length - 1].remove();
+            }
+        }
+
+        // Ініціалізація при завантаженні
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Експорт даних в console при подвійному кліку
+        document.querySelector('.event-log').addEventListener('dblclick', () => {
+            const events = JSON.parse(localStorage.getItem('tma_events') || '[]');
+            console.log('📊 Експорт всіх подій:', events);
+            console.log('📈 Статистика:', {
+                total: events.length,
+                app_opens: events.filter(e => e.event_type === 'app_open').length,
+                payments: events.filter(e => e.event_type === 'payment').length,
+                campaigns: [...new Set(events.map(e => e.campaign_id).filter(Boolean))]
+            });
+            addLog('📤 Дані експортовано в console (F12)', 'info');
+        });
+    </script>
+</body>
+</html>
